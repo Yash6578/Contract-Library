@@ -1,0 +1,124 @@
+openapi: 3.0.3
+
+info:
+  version: 0.0.1
+  title: Library Service
+  description: By using this service you can add and get book records
+
+tags:
+  - name: "Library"
+
+paths:
+  /dummy:
+    get:
+      tags:
+        - "Models"
+      operationId: dummyFunctionName
+      description: dummy description
+      summary: dummy summary
+      responses:
+        200:
+          description: This means OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Name'
+components:
+  schemas:
+    ActiveClientProfile:
+      discriminator:
+        propertyName: type
+      description: This is ActiveClientProfile model
+      type: object
+      properties:
+        active:
+          description: it states whether record is active or not
+          type: boolean
+        lastActive:
+          description: name of author
+          type: date
+
+    Name:
+      allOf: # Combines the ActiveClientProfile
+        - $ref: '#/components/schemas/ActiveClientProfile'
+        - type: object
+#          required:
+#            - rootCause
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+
+    Address:
+      allOf: # Combines the ActiveClientProfile
+        - $ref: '#/components/schemas/ActiveClientProfile'
+        - type: object
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            line3:
+              type: string
+            line4:
+              type: string
+            line5:
+              type: string
+            line6:
+              type: string
+            line7:
+              type: string
+            line8:
+              type: string
+            line9:
+              type: string
+            line10:
+              type: string
+
+    FilterResponse:
+      type: object
+      properties:
+       message:
+        type: string
+
+    ProfileDto:
+     type: object
+     properties:
+      id:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      addressLine3:
+        type: string
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        eventTime:
+          description: name of author
+          type: date
+        nameList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Name"
+        addressList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Address"
+
+
+
+
