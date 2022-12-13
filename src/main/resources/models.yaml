@@ -2,29 +2,177 @@ openapi: 3.0.3
 
 info:
   version: 0.0.1
-  title: Library Service
+  title: Contract-Library
   description: By using this service you can add and get book records
 
 tags:
-  - name: "Library"
+  - name: "Contract-Library"
 
 paths:
-  /dummy:
-    get:
-      tags:
-        - "Models"
-      operationId: dummyFunctionName
-      description: dummy description
-      summary: dummy summary
+#---------------------------------Client-Filter-----------------------------------------------
+  /profile/filter:
+    post:
+      operationId: filterProfile
+      description: it will check the profile validity and if profile is valid it will save it to database
+      summary: process profile
+      requestBody:
+        description: profile
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          text/plain:
+            schema:
+              type: string
       responses:
-        200:
-          description: This means OK
+        '200':
+          description: response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Name'
+                $ref: '#/components/schemas/FilterResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FilterResponse'
+
+#---------------------------------Client-Store-----------------------------------------------
+  /store/save:
+    post:
+      operationId: save
+      description: it will save the details of profile in aws(DynamoDB)
+      summary: save profile
+      requestBody:
+        description: profile
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileDto'
+      responses:
+        '200':
+          description: response
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /store/get/{id}:
+    get:
+      operationId: findById
+      description: it will find the details of profile in aws(DynamoDB) based on given id
+      summary: find profile
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDto'
+
+#---------------------------------Load-Generator-------------------------------------------------
+  /generate/kafka:
+    post:
+      operationId: produceDataToKafka
+      description: it will sent given profile to kafka
+      summary: sent profile to kafka
+      requestBody:
+        description: profile
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      responses:
+        '200':
+          description: ok
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: incorrect payload
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /generate/api:
+    post:
+      operationId: produceDataToClientFilterApi
+      description: it will sent given profile to client-filter application
+      summary: sent profile to api
+      requestBody:
+        description: profile
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      responses:
+        '200':
+          description: ok
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /generate/kafka/{n}:
+    get:
+      operationId: produceRandomProfileToKafka
+      description: it will generate n random profiles and sent them to kafka
+      summary: generate n random profiles and produce them to kafka
+      parameters:
+        - name: n
+          in: path
+          description: no of random profiles to create
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+      responses:
+        '200':
+          description: ok
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /generate/api/{n}:
+    get:
+      operationId: produceRandomProfileToClientFilterApi
+      description: it will generate n random profiles and sent them to client-filter api
+      summary: generate n random profiles and sent them to api
+      parameters:
+        - name: n
+          in: path
+          description: no of random profiles to create
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+      responses:
+        '200':
+          description: ok
+          content:
+            text/plain:
+              schema:
+                type: string
+
+#---------------------------------Components/Models-----------------------------------------------
 components:
   schemas:
     ActiveClientProfile:
@@ -51,6 +199,8 @@ components:
               type: string
             lastName:
               type: string
+            type:
+              type: string
 
     Address:
       allOf: # Combines the ActiveClientProfile
@@ -76,6 +226,8 @@ components:
             line9:
               type: string
             line10:
+              type: string
+            type:
               type: string
 
     FilterResponse:

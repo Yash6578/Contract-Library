@@ -46,9 +46,24 @@
         </dependency>
 
         <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+        <!-- Thanks for using https://jar-download.com -->
+
+
+
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.springfox</groupId>-->
+<!--            <artifactId>springfox-swagger2</artifactId>-->
+<!--            <version>3.0.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>javax.validation</groupId>
@@ -78,13 +93,12 @@
                             <inputSpec>${project.basedir}/src/main/resources/models.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
-                            <language>spring</language>
                             <output>${project.build.directory}/generated-sources/</output>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <generateApis>false</generateApis>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <generateApis>true</generateApis>
                             <generateModels>true</generateModels>
                             <modelPackage>com.accenture.contractlibrary.models</modelPackage>
-                            <dateLibrary>java8</dateLibrary>
+                            <apiPackage>com.accenture.contractlibrary.api</apiPackage>
                             <typeMappings>
                                 <typeMapping>LocalDate=ZonedDateTime</typeMapping>
                             </typeMappings>
@@ -99,6 +113,8 @@
                                     @lombok.experimental.SuperBuilder
 <!--                                    <iceOnlnterfay>true</iceOnlnterfay>-->
                                 </additionalModelTypeAnnotations>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <interfaceOnly>true</interfaceOnly>
                             </configOptions>
                         </configuration>
                     </execution>
